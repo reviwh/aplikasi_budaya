@@ -140,21 +140,6 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CustomIconButton(
-                  icon: Image.asset('assets/images/google.png'),
-                  onTap: () {},
-                ),
-                const SizedBox(width: 48),
-                CustomIconButton(
-                  icon: Image.asset('assets/images/apple.png'),
-                  onTap: () {},
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
                 Text('Don\'t have an account? ', style: AppStyles.subtitle),
                 GestureDetector(
                   onTap: () => Navigator.pushNamed(context, '/register'),

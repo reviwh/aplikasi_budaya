@@ -67,6 +67,25 @@ class _ListPageState extends State<ListPage> {
     }
   }
 
+  deleteHistorian(String id) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final res = await _historianRepo.deleteHistorian(id);
+      await getHistorian();
+      setState(() {
+        _isLoading = false;
+        showSnackbar(context, res.message);
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        showSnackbar(context, e.toString().getExceptionMessage());
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -84,19 +103,10 @@ class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          if (_isLoading)
-            const Center(child: CircularProgressIndicator())
-          else
-            _buildContent(),
-          if (_listType == ListType.historian) _buildAddButton(),
-          const Positioned(
-            bottom: 0,
-            child: BottomNavbar(),
-          ),
-        ],
-      ),
+      body: _buildContent(),
+      bottomNavigationBar: const BottomNavbar(),
+      floatingActionButton:
+          _listType == ListType.historian ? _buildAddButton() : null,
     );
   }
 
@@ -149,10 +159,13 @@ class _ListPageState extends State<ListPage> {
           _buildAppBar(),
           !isSearchFieldOpened ? _buildTab() : _buildSearchField(),
           Expanded(
-            child: _listType == ListType.culture
-                ? _buildCultureList(cultureList.search(_searchController.text))
-                : _buildHistorianList(
-                    historianList.search(_searchController.text)),
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _listType == ListType.culture
+                    ? _buildCultureList(
+                        cultureList.search(_searchController.text))
+                    : _buildHistorianList(
+                        historianList.search(_searchController.text)),
           )
         ],
       ),
@@ -231,7 +244,6 @@ class _ListPageState extends State<ListPage> {
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
             children: [
               ...data.map((e) => CultureCard(data: e)),
-              const SizedBox(height: 56),
             ],
           )
         : buildEmptyView();
@@ -242,26 +254,26 @@ class _ListPageState extends State<ListPage> {
         ? ListView(
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
             children: [
-              ...data.map((e) => HistorianTile(data: e)),
-              const SizedBox(height: 56),
+              ...data.map((e) => HistorianTile(
+                    data: e,
+                    deleteCallback: (value) => deleteHistorian(value),
+                  )),
             ],
           )
         : buildEmptyView();
   }
 
   _buildAddButton() {
-    return Positioned(
-        bottom: 100,
-        right: 32,
-        child: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushReplacementNamed(context, '/historian/add');
-          },
-          backgroundColor: AppColors.primary,
-          child: const Icon(
-            Icons.add_rounded,
-            color: AppColors.textOnPrimary,
-          ),
-        ));
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.pushReplacementNamed(context, '/historian/add');
+      },
+      backgroundColor: AppColors.primary,
+      shape: const CircleBorder(),
+      child: const Icon(
+        Icons.add_rounded,
+        color: AppColors.textOnPrimary,
+      ),
+    );
   }
 }

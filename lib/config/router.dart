@@ -13,6 +13,7 @@ import 'package:aplikasi_budaya/presentation/pages/login_page.dart';
 import 'package:aplikasi_budaya/presentation/pages/profile_page.dart';
 import 'package:aplikasi_budaya/presentation/pages/register_page.dart';
 import 'package:aplikasi_budaya/presentation/pages/splash_page.dart';
+import 'package:aplikasi_budaya/presentation/pages/update_historian_page.dart';
 import 'package:aplikasi_budaya/presentation/pages/welcome_page.dart';
 import 'package:aplikasi_budaya/utils/constant.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,10 @@ class RouteGenerator {
             : _errorRoute();
       case '/historian/add':
         return MaterialPageRoute(builder: (_) => const AddHistorianPage());
+      case '/historian/update':
+        return args is Historian ?
+        MaterialPageRoute(builder: (_) => UpdateHistorianPage(data: args))
+        : _errorRoute();
       case '/profile':
         return MaterialPageRoute(builder: (_) => const ProfilePage());
       case '/profile/edit':

@@ -7,7 +7,12 @@ import 'package:flutter/material.dart';
 
 class HistorianTile extends StatelessWidget {
   final Historian data;
-  const HistorianTile({super.key, required this.data});
+  final Function(String)? deleteCallback;
+  const HistorianTile({
+    super.key,
+    required this.data,
+    this.deleteCallback,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +20,7 @@ class HistorianTile extends StatelessWidget {
       children: [
         ListTile(
           onTap: () {
-            Navigator.pushNamed(context, '/historian', arguments: data);
+            Navigator.pushReplacementNamed(context, '/historian', arguments: data);
           },
           hoverColor: AppColors.surface.withOpacity(.5),
           contentPadding:
@@ -25,6 +30,17 @@ class HistorianTile extends StatelessWidget {
           leading: CircleAvatar(
             backgroundImage: const AssetImage(imagePlaceholder),
             foregroundImage: NetworkImage(data.image.getImageUrl()),
+          ),
+          trailing: IconButton(
+            onPressed: () {
+              if (deleteCallback != null) {
+                deleteCallback!(data.id);
+              }
+            },
+            icon: const Icon(
+              Icons.delete_rounded,
+              color: AppColors.textSecondary,
+            ),
           ),
         ),
         const Divider(height: 2, color: AppColors.surface, thickness: 2),

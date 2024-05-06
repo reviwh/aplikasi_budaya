@@ -7,5 +7,10 @@ class HistorianRepository {
 
   Future<Response<Historian>> getHistorian() async =>
       await _apiService.getHistorian();
-  Future<Response> addHistorian(Historian data) async =>  await _apiService.createHistorian(data);
+  Future<Response> addHistorian(Historian data) async =>
+      await _apiService.createHistorian(data);
+  Future<Response> deleteHistorian(String id) async =>
+      await _apiService.deleteHistorian(id);
+  Future<Response<Historian>> updateHistorian(Historian data, bool isImagePicked) async =>
+      await _apiService.updateHistorian(data, isImagePicked);
 }

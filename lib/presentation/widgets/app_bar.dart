@@ -1,19 +1,27 @@
+import 'package:aplikasi_budaya/core/theme/app_color.dart';
 import 'package:aplikasi_budaya/core/theme/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String? title;
   final Widget? trailing;
+  final Color? backgroundColor;
   final Function()? backButtonCallback;
 
-  const CustomAppBar(
-      {super.key, this.title, this.trailing, this.backButtonCallback});
+  const CustomAppBar({
+    super.key,
+    this.title,
+    this.trailing,
+    this.backgroundColor,
+    this.backButtonCallback,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+      color: backgroundColor ?? AppColors.background,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

@@ -37,7 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> _logout() async {
     await UserRepository().deleteSession();
     setState(() {
       Navigator.pushReplacementNamed(context, '/login');
@@ -109,13 +109,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 );
               },
             ),
-            // Need change later
-            ListTile(
-              title: Text("Gallery", style: AppStyles.title),
-              onTap: () {
-                Navigator.pushNamed(context, '/gallery');
-              },
-            )
           ],
         ),
       ),
@@ -123,7 +116,9 @@ class _ProfilePageState extends State<ProfilePage> {
         padding: const EdgeInsets.all(32.0),
         child: CustomButton(
           text: 'Logout',
-          onTap: () {},
+          onTap: () {
+            _logout();
+          },
         ),
       )
     ]));

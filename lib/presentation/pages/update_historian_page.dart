@@ -9,17 +9,19 @@ import 'package:aplikasi_budaya/presentation/widgets/button.dart';
 import 'package:aplikasi_budaya/presentation/widgets/radio.dart';
 import 'package:aplikasi_budaya/presentation/widgets/text_field.dart';
 import 'package:aplikasi_budaya/utils/constant.dart';
+import 'package:aplikasi_budaya/utils/extension.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddHistorianPage extends StatefulWidget {
-  const AddHistorianPage({super.key});
+class UpdateHistorianPage extends StatefulWidget {
+  final Historian data;
+  const UpdateHistorianPage({super.key, required this.data});
 
   @override
-  State<AddHistorianPage> createState() => _AddHistorianPageState();
+  State<UpdateHistorianPage> createState() => _UpdateHistorianPageState();
 }
 
-class _AddHistorianPageState extends State<AddHistorianPage> {
+class _UpdateHistorianPageState extends State<UpdateHistorianPage> {
   final HistorianRepository _historianRepo = HistorianRepository();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
@@ -29,15 +31,13 @@ class _AddHistorianPageState extends State<AddHistorianPage> {
   String _nameError = '',
       _dateOfBirthError = '',
       _fromError = '',
-      _descriptionError = '',
-      _imageError = '';
+      _descriptionError = '';
 
   File? _image;
-  bool _isLoading = false;
+  bool _isLoading = false, _isImagePicked = false;
   String _gender = 'Laki-laki';
 
   bool _isValid() =>
-      _image != null &&
       _nameError.isEmpty &&
       _dateOfBirthError.isEmpty &&
       _fromError.isEmpty &&
@@ -55,7 +55,6 @@ class _AddHistorianPageState extends State<AddHistorianPage> {
       _descriptionError = _descriptionController.text.isEmpty
           ? 'Deskripsi tidak boleh kosong'
           : '';
-      _imageError = _image == null ? 'Foto tidak boleh kosong' : '';
     });
   }
 
@@ -66,19 +65,20 @@ class _AddHistorianPageState extends State<AddHistorianPage> {
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);
+        _isImagePicked = true;
       });
     }
   }
 
-  Future<void> _createHistorian() async {
+  Future<void> _updateHistorian() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
-      final image = _image!.path;
+      final String image = _image == null ? widget.data.image : _image!.path;
       final Historian historian = Historian(
-        id: "",
+        id: widget.data.id,
         name: _nameController.text,
         dateOfBirth: _dateOfBirthController.text,
         from: _fromController.text,
@@ -87,15 +87,16 @@ class _AddHistorianPageState extends State<AddHistorianPage> {
         image: image,
       );
 
-      final res = await _historianRepo.addHistorian(historian);
+      final res =
+          await _historianRepo.updateHistorian(historian, _isImagePicked);
 
       setState(() {
         _isLoading = false;
         showSnackbar(context, res.message);
         Navigator.pushReplacementNamed(
           context,
-          '/list',
-          arguments: ListType.historian,
+          '/historian',
+          arguments: res.data.first,
         );
       });
     } catch (e) {
@@ -104,6 +105,16 @@ class _AddHistorianPageState extends State<AddHistorianPage> {
         showSnackbar(context, e.toString());
       });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController.text = widget.data.name;
+    _fromController.text = widget.data.from;
+    _dateOfBirthController.text = widget.data.dateOfBirth;
+    _descriptionController.text = widget.data.description;
+    _gender = widget.data.gender;
   }
 
   @override
@@ -217,7 +228,7 @@ class _AddHistorianPageState extends State<AddHistorianPage> {
                   onTap: () {
                     _validate();
                     if (_isValid()) {
-                      _createHistorian();
+                      _updateHistorian();
                     }
                   },
                 ),
@@ -239,9 +250,9 @@ class _AddHistorianPageState extends State<AddHistorianPage> {
           Stack(
             children: [
               ClipOval(
-                child: _image == null
-                    ? Image.asset(
-                        imagePlaceholder,
+                child: !_isImagePicked
+                    ? Image.network(
+                        widget.data.image.getImageUrl(),
                         width: 128,
                         height: 128,
                         fit: BoxFit.cover,
@@ -278,9 +289,6 @@ class _AddHistorianPageState extends State<AddHistorianPage> {
               ),
             ],
           ),
-          if (_imageError.isNotEmpty) const SizedBox(height: 8),
-          if (_imageError.isNotEmpty)
-            Text(_imageError, style: AppStyles.textFieldError),
           const SizedBox(height: 32),
         ],
       ),

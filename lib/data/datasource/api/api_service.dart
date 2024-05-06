@@ -110,21 +110,64 @@ class ApiService {
 
   Future<Response> createHistorian(Historian historian) async {
     var uri = Uri.parse("$_baseUrl/addsejarawan.php");
-    var req = http.MultipartRequest("POST", uri)
-      ..fields['name'] = historian.name
-      ..files.add(
-        http.MultipartFile.fromString('foto', historian.image),
-      );
-    var res = await req.send();
+    var req = http.MultipartRequest("POST", uri);
+    req.fields.addAll({
+      'nama': historian.name,
+      'tgl_lahir': historian.dateOfBirth,
+      'asal': historian.from,
+      'jenis_kelamin': historian.gender,
+      'deskripsi': historian.description,
+    });
+    req.files.add(await http.MultipartFile.fromPath('foto', historian.image));
+    var streamRes = await req.send();
+    var res = await http.Response.fromStream(streamRes);
 
-    print(res.stream.bytesToString());
-    // Response data = Response.fromJsonWithoutData(json.decode(res.stream.bytesToString()));
-    return Response(isSuccess: true, message: "message");
+    Response data = Response.fromJsonWithoutData(json.decode(res.body));
+
+    if (!data.isSuccess) throw Exception(data.message);
+
+    return data;
   }
 
-  Future updateHistorian() async {}
+  Future<Response<Historian>> updateHistorian(
+      Historian historian, bool isImagePicked) async {
+    var uri = Uri.parse("$_baseUrl/updatesejarawan.php");
+    var req = http.MultipartRequest("POST", uri);
+    req.fields.addAll({
+      'id': historian.id,
+      'nama': historian.name,
+      'tgl_lahir': historian.dateOfBirth,
+      'asal': historian.from,
+      'jenis_kelamin': historian.gender,
+      'deskripsi': historian.description,
+    });
+    if (isImagePicked) {
+      req.files.add(await http.MultipartFile.fromPath('foto', historian.image));
+    }
+    var streamRes = await req.send();
+    var res = await http.Response.fromStream(streamRes);
 
-  Future deleteHistorian() async {}
+    Response<Historian> data = Response.fromJson(
+      json.decode(res.body),
+      (value) => Historian.fromJson(value),
+    );
+
+    if (!data.isSuccess) throw Exception(data.message);
+
+    return data;
+  }
+
+  Future<Response> deleteHistorian(String id) async {
+    http.Response res = await http.post(
+      Uri.parse("$_baseUrl/deletesejarawan.php"),
+      body: {'id': id},
+    );
+
+    Response data = Response.fromJsonWithoutData(json.decode(res.body));
+
+    if (!data.isSuccess) throw Exception(data.message);
+    return data;
+  }
 
   Future<List<String>> getImages() async {
     http.Response res = await http.get(Uri.parse("$_baseUrl/gambar.php"));

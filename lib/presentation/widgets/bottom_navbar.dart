@@ -10,7 +10,7 @@ class BottomNavbar extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 84,
-      color: AppColors.surface,
+      color: AppColors.primary,
       padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -31,7 +31,14 @@ class BottomNavbar extends StatelessWidget {
             },
           ),
           _buildNavbarItem(
-            icon: 'assets/images/person.png',
+            icon: 'assets/images/gallery.png',
+            label: 'Gallery',
+            onTap: () {
+              Navigator.pushNamed(context, '/gallery');
+            },
+          ),
+          _buildNavbarItem(
+            icon: 'assets/images/person_white.png',
             label: 'Profile',
             onTap: () {
               Navigator.pushNamed(context, '/profile');
@@ -64,7 +71,7 @@ class BottomNavbar extends StatelessWidget {
             Text(
               label.toUpperCase(),
               textAlign: TextAlign.center,
-              style: AppStyles.info,
+              style: AppStyles.info.copyWith(color: AppColors.textOnPrimary),
             ),
           ],
         ),

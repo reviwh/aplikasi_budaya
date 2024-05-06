@@ -21,9 +21,7 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
     _userRepository.getSession().then((value) {
       setState(() {
-        _nextPageRoute = value['isLogin']!
-            ? '/home'
-            : (value['isFirstTime']! ? '/welcome' : '/login');
+        _nextPageRoute = value['isLogin']! ? '/home' : '/login';
       });
     });
     Timer(const Duration(seconds: 2), () {

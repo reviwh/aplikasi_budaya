@@ -51,17 +51,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Stack(
-        children: [
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _buildContent(),
-          const Positioned(
-            bottom: 0,
-            child: BottomNavbar(),
-          ),
-        ],
-      ),
+      body: _isLoading ? buildLoadingView() : _buildContent(),
+      bottomNavigationBar: const BottomNavbar(),
     );
   }
 
@@ -132,7 +123,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               const SizedBox(height: 16),
               ...data.map((e) => CultureCard(data: e)),
-              const SizedBox(height: 56),
             ],
           )
         : buildEmptyView();

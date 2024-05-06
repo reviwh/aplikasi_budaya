@@ -14,6 +14,8 @@ class CustomTextField extends StatelessWidget {
   final int? maxLines;
   final double? height;
   final TextCapitalization textCapitalization;
+  final bool enabled;
+  final Color? color;
 
   const CustomTextField({
     super.key,
@@ -30,6 +32,8 @@ class CustomTextField extends StatelessWidget {
     this.maxLines = 1,
     this.height,
     this.textCapitalization = TextCapitalization.none,
+    this.enabled = true,
+    this.color,
   });
 
   @override
@@ -40,7 +44,7 @@ class CustomTextField extends StatelessWidget {
         Container(
           height: height,
           decoration: BoxDecoration(
-            color: AppColors.background,
+            color: color ?? AppColors.background,
             borderRadius: BorderRadius.circular(16.0),
             boxShadow: const [
               BoxShadow(
@@ -60,6 +64,7 @@ class CustomTextField extends StatelessWidget {
                 AppStyles.subtitle.copyWith(color: AppColors.textPrimary),
             cursorColor: AppColors.secondary,
             obscureText: obscureText,
+            enabled: enabled,
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: hintStyle ?? AppStyles.subtitle,
