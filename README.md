@@ -1,16 +1,51 @@
-# aplikasi_budaya
+# Aplikasi Budaya
 
-A new Flutter project.
+This application aims to showcase the rich culture and history of West Sumatera, Indonesia.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Clone the Project
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+git clone https://github.com/reviwh/aplikasi_budaya.git
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Obtain the Database and API from Another Repository
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+You need to fetch the necessary database and API from the following repository:
+
+```bash
+git clone https://github.com/Ihsan005/sejarawan.git
+```
+
+### Navigate to the Project Directory
+
+
+```bash
+cd aplikasi_budaya
+```
+
+### Set the ```BASE_URL``` in the ```.env``` File
+
+Ensure to set the ```BASE_URL``` variable in the ```.env``` file to your API base URL:
+
+```bash
+echo BASE_URL='YOUR_API_BASE_URL' > .env
+```
+
+### Run the application
+```bash
+flutter run
+```
+
+```Note: Ensure that your API is accessible.```
+
+## Contributing
+
+We welcome pull requests. For major changes, please open an issue first to discuss what you would like to change.
+
+Please ensure to update tests as appropriate.
+
+## License
+
+This project is licensed under the [MIT License](/LICENSE.md).
